@@ -1,0 +1,79 @@
+<div class="container">
+  <div class="card p-5 mt-4">
+    <h2>Departments</h2>
+    <div class="container">
+      <div
+        *ngFor="let department of getDepartmentNames()"
+        class="department-container"
+      >
+        <h3>{{ department }}</h3>
+        <table
+          mat-table
+          [dataSource]="departmentEmployees[department]"
+          class="mat-elevation-z8"
+        >
+          <!-- Colonna per il nome -->
+          <ng-container matColumnDef="employeeName">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let employee">
+              {{ employee.employeeName }}
+            </td>
+          </ng-container>
+
+          <!-- Colonna per la mail -->
+          <ng-container matColumnDef="employeeEmail">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let employee">
+              {{ employee.employeeEmail }}
+            </td>
+          </ng-container>
+
+          <!-- Colonna per il numero di contatto -->
+          <ng-container matColumnDef="employeeContactNumber">
+            <th mat-header-cell *matHeaderCellDef>Contact Number</th>
+            <td mat-cell *matCellDef="let employee">
+              {{ employee.employeeContactNumber }}
+            </td>
+          </ng-container>
+
+          <!-- Colonna per l'indirizzo -->
+          <ng-container matColumnDef="employeeAddress">
+            <th mat-header-cell *matHeaderCellDef>Address</th>
+            <td mat-cell *matCellDef="let employee">
+              {{ employee.employeeAddress }}
+            </td>
+          </ng-container>
+
+          <!-- Colonna per le competenze -->
+          <ng-container matColumnDef="employeeSkills">
+            <th mat-header-cell *matHeaderCellDef>Skills</th>
+            <td mat-cell *matCellDef="let employee">
+              {{ employee.employeeSkills }}
+            </td>
+          </ng-container>
+
+          <!-- Colonna per il genere -->
+          <ng-container matColumnDef="employeeGender">
+            <th mat-header-cell *matHeaderCellDef>Gender</th>
+            <td mat-cell *matCellDef="let employee">
+              {{ employee.employeeGender }}
+            </td>
+          </ng-container>
+
+          <!-- Righe e intestazioni della tabella -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        <div
+          *ngIf="
+            !departmentEmployees[department] ||
+            departmentEmployees[department].length === 0
+          "
+          class="no-employees"
+        >
+          No employees in this department
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

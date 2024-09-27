@@ -1,0 +1,290 @@
+<div class="container">
+  <div class="card p-5 mt-4">
+    <h2>Add employee</h2>
+    <!-- Modulo gestito con 'ngForm'. Al submit, viene eseguito il metodo 'saveEmployee()'-->
+    <form #employeeForm="ngForm" (ngSubmit)="saveEmployee(employeeForm)">
+      <!-- Employee Id Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Employee Id</mat-label>
+        <input
+          matInput
+          placeholder="Employee Id"
+          name="employeeId"
+          [(ngModel)]="employee.employeeId"
+          disabled
+          required
+        />
+        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+      </mat-form-field>
+
+      <!-- Employee Name Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Employee Name</mat-label>
+        <input
+          matInput
+          placeholder="Employee Name"
+          name="employeeName"
+          [(ngModel)]="employee.employeeName"
+          required
+          minlength="3"
+          maxlength="50"
+        />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error
+          *ngIf="
+            employeeForm.controls['employeeName']?.invalid &&
+            (employeeForm.controls['employeeName']?.dirty ||
+              employeeForm.controls['employeeName']?.touched)
+          "
+        >
+          <div
+            *ngIf="employeeForm.controls['employeeName']?.errors?.['required']"
+          >
+            Name is required
+          </div>
+          <div
+            *ngIf="employeeForm.controls['employeeName']?.errors?.['minlength']"
+          >
+            Name must be at least 3 characters long
+          </div>
+          <div
+            *ngIf="employeeForm.controls['employeeName']?.errors?.['maxlength']"
+          >
+            Name cannot be more than 50 characters long
+          </div>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Email Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          placeholder="Email"
+          name="employeeEmail"
+          [(ngModel)]="employee.employeeEmail"
+          required
+          email
+        />
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-error
+          *ngIf="
+            employeeForm.controls['employeeEmail']?.invalid &&
+            (employeeForm.controls['employeeEmail']?.dirty ||
+              employeeForm.controls['employeeEmail']?.touched)
+          "
+        >
+          <div
+            *ngIf="employeeForm.controls['employeeEmail']?.errors?.['required']"
+          >
+            Email is required
+          </div>
+          <div
+            *ngIf="employeeForm.controls['employeeEmail']?.errors?.['email']"
+          >
+            Please enter a valid email
+          </div>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Contact Number Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Contact Number</mat-label>
+        <input
+          matInput
+          placeholder="Contact Number"
+          name="employeeContactNumber"
+          [(ngModel)]="employee.employeeContactNumber"
+          required
+          pattern="[0-9]{10}"
+        />
+        <mat-icon matSuffix>call</mat-icon>
+        <mat-error
+          *ngIf="
+            employeeForm.controls['employeeContactNumber']?.invalid &&
+            (employeeForm.controls['employeeContactNumber']?.dirty ||
+              employeeForm.controls['employeeContactNumber']?.touched)
+          "
+        >
+          <div
+            *ngIf="employeeForm.controls['employeeContactNumber']?.errors?.['required']"
+          >
+            Contact number is required
+          </div>
+          <div
+            *ngIf="employeeForm.controls['employeeContactNumber']?.errors?.['pattern']"
+          >
+            Contact number must be 10 digits
+          </div>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Address Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Address</mat-label>
+        <input
+          matInput
+          placeholder="Address"
+          name="employeeAddress"
+          [(ngModel)]="employee.employeeAddress"
+          required
+        />
+        <mat-icon matSuffix>home</mat-icon>
+        <mat-error
+          *ngIf="
+            employeeForm.controls['employeeAddress']?.invalid &&
+            (employeeForm.controls['employeeAddress']?.dirty ||
+              employeeForm.controls['employeeAddress']?.touched)
+          "
+        >
+          <div
+            *ngIf="employeeForm.controls['employeeAddress']?.errors?.['required']"
+          >
+            Address is required
+          </div>
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Selezione per creare un nuovo dipartimento -->
+      <div>
+        <label>Do you want to create a new department?</label>
+        <mat-radio-group
+          [(ngModel)]="createNewDepartment"
+          (change)="onCreateNewDepartmentChange($event.value)"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <mat-radio-button value="yes">Yes</mat-radio-button>
+          <mat-radio-button value="no" selected>No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Campo di input per il nuovo dipartimento -->
+      <mat-form-field
+        *ngIf="createNewDepartment === 'yes'"
+        appearance="outline"
+      >
+        <mat-label>New Department Name</mat-label>
+        <input
+          matInput
+          placeholder="Enter new department name"
+          [(ngModel)]="newDepartmentName"
+          [ngModelOptions]="{ standalone: true }"
+          required
+        />
+      </mat-form-field>
+
+      <!-- Dropdown per selezionare un dipartimento esistente -->
+      <mat-form-field *ngIf="createNewDepartment === 'no'" appearance="outline">
+        <mat-label>Choose your department</mat-label>
+        <mat-select
+          [(ngModel)]="employee.employeeDepartmentId"
+          name="department"
+          required
+        >
+          <mat-option
+            *ngFor="let department of departments"
+            [value]="department.departmentId"
+          >
+            {{ department.departmentName }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="
+            employeeForm.controls['department']?.invalid &&
+            employeeForm.controls['department']?.touched
+          "
+        >
+          Department is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Gender Field -->
+      <div>
+        <label>Gender</label>
+        <mat-radio-group
+          aria-label="Select an option"
+          [(ngModel)]="employee.employeeGender"
+          name="employeeGender"
+          required
+        >
+          <mat-radio-button value="M">Male</mat-radio-button>
+          <mat-radio-button value="F">Female</mat-radio-button>
+        </mat-radio-group>
+        <mat-error
+          *ngIf="
+            employeeForm.controls['employeeGender']?.invalid &&
+            (employeeForm.controls['employeeGender']?.dirty ||
+              employeeForm.controls['employeeGender']?.touched)
+          "
+        >
+          <div
+            *ngIf="employeeForm.controls['employeeGender']?.errors?.['required']"
+          >
+            Gender is required
+          </div>
+        </mat-error>
+      </div>
+
+      <!-- Employee Skills Field -->
+      <mat-form-field appearance="outline" class="mt-2">
+        <mat-label>Employee Skills</mat-label>
+        <input
+          matInput
+          placeholder="Employee Skills"
+          name="employeeSkills"
+          [(ngModel)]="employee.employeeSkills"
+          disabled
+        />
+        <mat-icon matSuffix>menu_book</mat-icon>
+      </mat-form-field>
+
+      <!-- Skills Checkboxes -->
+      <div>
+        <label>Skills</label>
+        <section class="example-section">
+          <mat-checkbox
+            (change)="onSkillsChanges($event)"
+            value="Java"
+            [checked]="checkSkills('Java')"
+            class="example-margin"
+            >Java</mat-checkbox
+          >
+          <mat-checkbox
+            (change)="onSkillsChanges($event)"
+            value="Angular"
+            [checked]="checkSkills('Angular')"
+            class="example-margin"
+            >Angular</mat-checkbox
+          >
+          <mat-checkbox
+            (change)="onSkillsChanges($event)"
+            value="Word"
+            [checked]="checkSkills('Word')"
+            class="example-margin"
+            >Word</mat-checkbox
+          >
+          <mat-checkbox
+            (change)="onSkillsChanges($event)"
+            value="Excel"
+            [checked]="checkSkills('Excel')"
+            class="example-margin"
+            >Excel</mat-checkbox
+          >
+        </section>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="text-center mt-3">
+        <button
+          mat-raised-button
+          color="primary"
+          class="mt-3"
+          [disabled]="employeeForm.invalid"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

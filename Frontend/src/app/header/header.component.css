@@ -1,0 +1,30 @@
+.header-title {
+  font-weight: bold;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.header-link {
+  color: black;
+  font-size: 0.8em; /* Adatta la dimensione del font per la leggibilità */
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.header-link:hover {
+  color: #ff4081;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Media query per schermi piccoli */
+@media (max-width: 600px) {
+  .header-title {
+    font-size: 0.8em;
+  }
+
+  .header-link {
+    font-size: 0.8em;
+  }
+}

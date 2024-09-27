@@ -1,0 +1,32 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <span routerLink="/" class="header-title"> Employee Management System </span>
+  <span class="spacer"></span>
+
+  <!-- Link di navigazione per i vari componenti -->
+  <ng-container *ngIf="authService.isLoggedIn()">
+    <!-- Mostra il menu solo se l'utente è HR -->
+    <ng-container *ngIf="authService.hasRole('HR')">
+      <button mat-button [matMenuTriggerFor]="hrTools" class="header-link">
+        HR Tools
+      </button>
+      <mat-menu #hrTools="matMenu">
+        <button mat-menu-item routerLink="/employee">Add employee</button>
+        <button mat-menu-item routerLink="/employee-list">Employee list</button>
+      </mat-menu>
+    </ng-container>
+    <!-- Mostra il link per il Department List a tutti gli utenti loggati -->
+    <a mat-button routerLink="/department-list" class="header-link"
+      >Department list</a
+    >
+  </ng-container>
+
+  <!-- Link di login e logout -->
+  <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+    <a mat-button routerLink="/login" class="header-link">Login</a>
+    <a mat-button routerLink="/register" class="header-link">Register</a>
+  </ng-container>
+
+  <ng-template #loggedIn>
+    <a mat-button (click)="logout()" class="header-link">Logout</a>
+  </ng-template>
+</mat-toolbar>
