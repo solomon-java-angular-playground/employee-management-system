@@ -1,8 +1,5 @@
 package com.teleconsys.employee_service.entity;
 
-// Importa le annotazioni e le classi necessarie di JPA per il mapping
-// dell'entità al database, come Entity, Table, Id, GeneratedValue
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -20,11 +17,9 @@ public class Employee {
     private String employeeGender;
     private String employeeSkills;
     private String employeeEmail; // Nuovo campo per l'email
-    private Integer employeeDepartmentId;
 
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    private Department department;
+    // Campo per l'ID del dipartimento
+    private Integer employeeDepartmentId;
 
     // Costruttore di default, getter e setter
     public Employee() { }
@@ -85,14 +80,6 @@ public class Employee {
         this.employeeDepartmentId = employeeDepartmentId;
     }
 
-    public Department getEmployeeDepartment() {
-        return department;
-    }
-
-    public void setEmployeeDepartment(Department department) {
-        this.department = department;
-    }
-
     public String getEmployeeEmail() {
         return employeeEmail;
     }
@@ -101,5 +88,3 @@ public class Employee {
         this.employeeEmail = employeeEmail;
     }
 }
-
-

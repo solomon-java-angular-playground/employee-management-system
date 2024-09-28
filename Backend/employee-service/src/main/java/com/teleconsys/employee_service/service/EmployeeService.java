@@ -1,7 +1,7 @@
 package com.teleconsys.employee_service.service;
 
-import com.employees.crud.dao.EmployeeDao;
-import com.employees.crud.entity.Employee;
+import com.teleconsys.employee_service.dao.EmployeeDao;
+import com.teleconsys.employee_service.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
