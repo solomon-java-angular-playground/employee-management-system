@@ -1,11 +1,11 @@
 package com.teleconsys.user_service.service;
 
-import com.employees.crud.dao.RoleDao;
-import com.employees.crud.dao.UserDao;
-import com.employees.crud.dao.UserRoleDao;
-import com.employees.crud.entity.Role;
-import com.employees.crud.entity.User;
-import com.employees.crud.entity.UserRole;
+import com.teleconsys.user_service.dao.RoleDao;
+import com.teleconsys.user_service.dao.UserDao;
+import com.teleconsys.user_service.dao.UserRoleDao;
+import com.teleconsys.user_service.entity.Role;
+import com.teleconsys.user_service.entity.User;
+import com.teleconsys.user_service.entity.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.teleconsys.user_service.service;
 
-import com.employees.crud.dao.UserDao;
-import com.employees.crud.entity.User;
+import com.teleconsys.user_service.dao.UserDao;
+import com.teleconsys.user_service.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

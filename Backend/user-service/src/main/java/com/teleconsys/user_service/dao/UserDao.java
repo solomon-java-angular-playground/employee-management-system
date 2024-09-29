@@ -1,6 +1,6 @@
 package com.teleconsys.user_service.dao;
 
-import com.employees.crud.entity.User;
+import com.teleconsys.user_service.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

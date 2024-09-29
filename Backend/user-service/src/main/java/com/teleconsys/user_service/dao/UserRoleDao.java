@@ -1,7 +1,7 @@
 package com.teleconsys.user_service.dao;
 
-import com.employees.crud.entity.User;
-import com.employees.crud.entity.UserRole;
+import com.teleconsys.user_service.entity.User;
+import com.teleconsys.user_service.entity.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

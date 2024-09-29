@@ -1,7 +1,7 @@
 package com.teleconsys.user_service.controller;
 
-import com.employees.crud.entity.User;
-import com.employees.crud.service.UserService;
+import com.teleconsys.user_service.entity.User;
+import com.teleconsys.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
