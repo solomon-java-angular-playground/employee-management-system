@@ -1,6 +1,7 @@
 package com.teleconsys.department_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.teleconsys.department_service.dto.EmployeeDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,10 +15,6 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer departmentId;
     private String departmentName;
-
-    // Definisce una relazione 1-N con la classe Employee
-    @OneToMany(mappedBy = "department")
-    private List<Employee> employees;
 
     public Department() {
     }
@@ -37,13 +34,6 @@ public class Department {
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
     }
-
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
+    
 }
 

@@ -1,14 +1,11 @@
 package com.teleconsys.department_service.service;
 
-import com.employees.crud.dao.DepartmentDao;
-import com.employees.crud.entity.Department;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teleconsys.department_service.dao.DepartmentDao;
+import com.teleconsys.department_service.entity.Department;
+import com.teleconsys.department_service.dto.EmployeeDTO;
+import com.teleconsys.department_service.feign.EmployeeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.employees.crud.entity.QEmployee;
-import com.employees.crud.entity.QDepartment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +16,8 @@ public class DepartmentService {
     @Autowired
     private DepartmentDao departmentDao;
 
-    // Per costruire le query con QueryDSL
-    private final JPAQueryFactory queryFactory;
-
     @Autowired
-    public DepartmentService(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
+    private EmployeeClient employeeClient; // Inject Feign client
 
     public Department saveDepartment(Department department) {
         try {
@@ -53,37 +45,22 @@ public class DepartmentService {
         }
     }
 
-    // Metodo per ottenere i dipartimenti con gli impiegati
+    // Metodo per ottenere i dipartimenti con gli impiegati utilizzando EmployeeDTO
     public List<Object[]> getDepartmentsWithEmployees() {
-        QDepartment department = QDepartment.department;
-        QEmployee employee = QEmployee.employee;
+        List<Department> departments = departmentDao.findAll();
 
-        // Esecuzione della la query e
-        // ottenimento del risultato come lista di Tuple
-        List<Tuple> results = queryFactory
-                .select(department.departmentId, department.departmentName, employee.employeeId, employee.employeeName,
-                        employee.employeeContactNumber, employee.employeeAddress, employee.employeeGender, employee.employeeSkills, employee.employeeEmail)
-                .from(department)
-                .leftJoin(department.employees, employee)
-                .orderBy(department.departmentName.asc())
-                .fetch();
-
-
-        // Conversione della lista di Tuple in una lista di Object[]
         List<Object[]> departmentsWithEmployees = new ArrayList<>();
-        for (Tuple tuple : results) {
-            Object[] departmentEmployeeData = new Object[]{
-                    tuple.get(department.departmentId),
-                    tuple.get(department.departmentName),
-                    tuple.get(employee.employeeId),
-                    tuple.get(employee.employeeName),
-                    tuple.get(employee.employeeContactNumber),
-                    tuple.get(employee.employeeAddress),
-                    tuple.get(employee.employeeGender),
-                    tuple.get(employee.employeeSkills),
-                    tuple.get(employee.employeeEmail)
-            };
-            departmentsWithEmployees.add(departmentEmployeeData);
+        for (Department department : departments) {
+            List<EmployeeDTO> employees = employeeClient.getEmployeesByDepartmentId(department.getDepartmentId());
+
+            for (EmployeeDTO employeeDTO : employees) {
+                Object[] departmentEmployeeData = new Object[]{
+                        department.getDepartmentId(),
+                        department.getDepartmentName(),
+                        employeeDTO
+                };
+                departmentsWithEmployees.add(departmentEmployeeData);
+            }
         }
 
         return departmentsWithEmployees;
@@ -105,4 +82,3 @@ public class DepartmentService {
         }
     }
 }
-
