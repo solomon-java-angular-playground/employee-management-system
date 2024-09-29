@@ -1,6 +1,5 @@
 package com.teleconsys.department_service.controller;
 
-import com.teleconsys.department_service.dto.EmployeeDTO;
 import com.teleconsys.department_service.entity.Department;
 import com.teleconsys.department_service.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/departments")

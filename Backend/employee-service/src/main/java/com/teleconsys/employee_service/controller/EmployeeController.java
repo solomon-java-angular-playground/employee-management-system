@@ -5,7 +5,7 @@ import com.teleconsys.employee_service.dto.DepartmentDTO;
 import com.teleconsys.employee_service.entity.Employee;
 import com.teleconsys.employee_service.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class EmployeeController {
     private DepartmentClient departmentClient;
 
     @PostMapping
-    @PreAuthorize("hasRole('HR')")
+    //@PreAuthorize("hasRole('HR')")
     public Employee saveEmployee(@RequestBody Employee employee) {
         if (employee.getEmployeeDepartmentId() != null) {
             // Uso del Feign Client per ottenere il dipartimento
@@ -38,25 +38,30 @@ public class EmployeeController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('HR')")
+    // @PreAuthorize("hasRole('HR')")
     public List<Employee> getEmployees() {
         return employeeService.getEmployees();
     }
 
     @GetMapping("/{employeeId}")
-    @PreAuthorize("hasRole('HR')")
+    //@PreAuthorize("hasRole('HR')")
     public Employee getEmployee(@PathVariable Integer employeeId) {
         return employeeService.getEmployees(employeeId);
     }
 
+    @GetMapping("/by-department/{departmentId}")
+    public List<Employee> getEmployeesByDepartmentId(@PathVariable Integer departmentId) {
+        return employeeService.getEmployeesByDepartmentId(departmentId);
+    }
+
     @DeleteMapping("/{employeeId}")
-    @PreAuthorize("hasRole('HR')")
+    //@PreAuthorize("hasRole('HR')")
     public void deleteEmployee(@PathVariable Integer employeeId) {
         employeeService.deleteEmployee(employeeId);
     }
 
     @PutMapping("/{employeeId}")
-    @PreAuthorize("hasRole('HR')")
+    //@PreAuthorize("hasRole('HR')")
     public Employee updateEmployee(@PathVariable Integer employeeId, @RequestBody Employee employee) {
         Employee existingEmployee = employeeService.getEmployees(employeeId);
         if (existingEmployee == null) {

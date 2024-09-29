@@ -42,7 +42,14 @@ public class EmployeeService {
         } catch (Exception e) {
             throw new RuntimeException("Error retrieving employee: " + e.getMessage(), e);
         }
+    }
 
+    public List<Employee> getEmployeesByDepartmentId(Integer departmentId) {
+        try {
+            return employeeDao.findByEmployeeDepartmentId(departmentId);
+        } catch (Exception e) {
+            throw new RuntimeException("Error retrieving employees by department: " + e.getMessage(), e);
+        }
     }
 
     public void deleteEmployee(Integer employeeId) {
