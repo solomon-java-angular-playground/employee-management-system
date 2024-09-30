@@ -4,8 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -24,6 +26,9 @@ public class JwtService {
 
     // Chiave segreta generata su https://tools.keycdn.com/sha256-online-generatorper firmare e verificare i token JWT
     private static final String secretkey = "b133a0c0e9bee3be20163d2ad31d6248db292aa6dcb1ee087a2aa50e0fc75ae2";
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     // Metodo per generare un token JWT
     public String generateToken(UserDetails userDetails) {
@@ -84,4 +89,8 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    // Metodo per caricare i dettagli dell'utente tramite UserDetailsService
+    public UserDetails loadUserByUsername(String username) {
+        return userDetailsService.loadUserByUsername(username);
+    }
 }
