@@ -1,4 +1,4 @@
-package com.employees.crud.config;
+package com.teleconsys.auth_service.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
