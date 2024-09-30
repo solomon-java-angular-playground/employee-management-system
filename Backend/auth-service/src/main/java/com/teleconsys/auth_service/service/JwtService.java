@@ -1,5 +1,6 @@
 package com.teleconsys.auth_service.service;
 
+import com.teleconsys.auth_service.feign.UserServiceClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -7,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -28,7 +28,7 @@ public class JwtService {
     private static final String secretkey = "b133a0c0e9bee3be20163d2ad31d6248db292aa6dcb1ee087a2aa50e0fc75ae2";
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserServiceClient userServiceClient;
 
     // Metodo per generare un token JWT
     public String generateToken(UserDetails userDetails) {
@@ -91,6 +91,6 @@ public class JwtService {
 
     // Metodo per caricare i dettagli dell'utente tramite UserDetailsService
     public UserDetails loadUserByUsername(String username) {
-        return userDetailsService.loadUserByUsername(username);
+        return userServiceClient.getUserByUsername(username);
     }
 }
