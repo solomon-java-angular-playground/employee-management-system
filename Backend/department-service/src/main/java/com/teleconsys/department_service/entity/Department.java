@@ -1,10 +1,7 @@
 package com.teleconsys.department_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.teleconsys.department_service.dto.EmployeeDTO;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "department")

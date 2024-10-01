@@ -12,7 +12,7 @@
     <artifactId>auth-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>auth-service</name>
-    <description>Service per la gestione dell&apos;autenticazione</description>
+    <description>Service per la gestione dell'autenticazione</description>
     <url/>
     <licenses>
         <license/>
