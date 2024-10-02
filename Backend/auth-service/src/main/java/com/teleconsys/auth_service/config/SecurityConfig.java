@@ -4,6 +4,7 @@ import com.teleconsys.auth_service.feign.UserServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,9 +41,11 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Permette le richieste preflight
                         .requestMatchers("/register", "/login", "/v3/api-docs/**", "/swagger-ui.html").permitAll() // Endpoint pubblici
+                        .requestMatchers("/api/jwt/generate", "/api/jwt/validate").permitAll() // Permetti accesso pubblico a questo endpoint
                         .anyRequest().authenticated()) // Tutte le altre richieste richiedono autenticazione
-                .httpBasic(Customizer.withDefaults())
+                // .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -50,9 +55,18 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
+            // Estrazione del token dalla richiesta corrente
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String token = null;
+
+            // Controlla se l'autenticazione è presente e contiene le credenziali
+            if (authentication != null && authentication.getCredentials() instanceof String) {
+                token = (String) authentication.getCredentials();
+            }
+
+            // Chiamata al servizio utente con il token
             try {
-                // Ottieni i dettagli dell'utente tramite Feign client
-                return userServiceClient.getUserByUsername(username);
+                return userServiceClient.getUserByUsername(token, username);
             } catch (Exception e) {
                 throw new UsernameNotFoundException("User not found");
             }

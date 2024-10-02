@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("http://localhost:4200") // Per accettare richieste provenienti da una specifica origine
 @RequestMapping("/departments")
 public class DepartmentController {
 

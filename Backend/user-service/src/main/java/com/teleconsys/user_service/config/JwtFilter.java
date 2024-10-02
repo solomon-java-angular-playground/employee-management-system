@@ -1,7 +1,7 @@
-package com.teleconsys.auth_service.config;
+package com.teleconsys.user_service.config;
 
-import com.teleconsys.auth_service.feign.UserServiceClient;
-import com.teleconsys.auth_service.service.JwtService;
+import com.teleconsys.user_service.dao.UserDao;
+import com.teleconsys.user_service.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final Logger logger = Logger.getLogger(JwtFilter.class.getName());
 
     @Autowired
-    private UserServiceClient userServiceClient;
+    private UserDao userDao;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -61,7 +61,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Se lo username è stato estratto dal token e l'utente non è ancora autenticato
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userServiceClient.getUserByUsername(token, username);
+            UserDetails userDetails = userDao.findByUsername(username);
 
             // Log dei dettagli dell'utente recuperati
             logger.info("User details retrieved: " + userDetails.getUsername());

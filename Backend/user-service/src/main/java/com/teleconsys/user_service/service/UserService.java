@@ -1,6 +1,7 @@
 package com.teleconsys.user_service.service;
 
 import com.teleconsys.user_service.dao.UserDao;
+import com.teleconsys.user_service.dto.AuthRequest;
 import com.teleconsys.user_service.entity.User;
 import com.teleconsys.user_service.feign.AuthClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class UserService {
     private UserDao userDao;
 
     @Autowired
-    private AuthClient authClient;  // Per comunicazione con jwtClient
+    private AuthClient authClient;  // Per comunicazione con auth-service
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
@@ -27,22 +28,23 @@ public class UserService {
             user.setPassword(encoder.encode(rawPassword));
             userDao.save(user);
 
-            // Invia la richiesta di generazione token all'auth-service via Feign client
-            return authClient.generateToken(user.getUsername(), rawPassword);
+            // Invia la richiesta di generazione token all'auth-service via Feign client usando un DTO
+            AuthRequest authRequest = new AuthRequest(user.getUsername(), rawPassword);
+            return authClient.generateToken(authRequest);
         } catch (Exception e) {
-            // Gestisci l'eccezione e magari logga l'errore
+            // Gestisci l'eccezione e logga l'errore
             throw new RuntimeException("Registration failed: " + e.getMessage(), e);
         }
     }
 
-    public String verify(User user) {
+    public String login(User user) {
         try {
-            // Invia la richiesta di autenticazione all'auth-service via Feign client
-            return authClient.generateToken(user.getUsername(), user.getPassword());
+            // Invia la richiesta di autenticazione all'auth-service via Feign client usando un DTO
+            AuthRequest authRequest = new AuthRequest(user.getUsername(), user.getPassword());
+            return authClient.generateToken(authRequest);
         } catch (Exception e) {
             // Gestione dell'eccezione
-            throw new RuntimeException("Verification failed: " + e.getMessage(), e);
+            throw new RuntimeException("Login failed: " + e.getMessage(), e);
         }
     }
 }
-

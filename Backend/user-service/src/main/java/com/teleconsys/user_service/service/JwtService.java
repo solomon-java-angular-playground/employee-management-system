@@ -1,6 +1,6 @@
-package com.teleconsys.auth_service.service;
+package com.teleconsys.user_service.service;
 
-import com.teleconsys.auth_service.feign.UserServiceClient;
+import com.teleconsys.user_service.dao.UserDao;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -28,7 +28,7 @@ public class JwtService {
     private static final String secretkey = "b133a0c0e9bee3be20163d2ad31d6248db292aa6dcb1ee087a2aa50e0fc75ae2";
 
     @Autowired
-    private UserServiceClient userServiceClient;
+    private UserDao userDao;
 
     // Metodo per generare un token JWT
     public String generateToken(UserDetails userDetails) {
@@ -90,7 +90,7 @@ public class JwtService {
     }
 
     // Metodo per caricare i dettagli dell'utente tramite UserDetailsService
-    public UserDetails loadUserByUsername(String token, String username) {
-        return userServiceClient.getUserByUsername(token, username); // Passa il token al servizio utente
+    public UserDetails loadUserByUsername(String username) {
+        return userDao.findByUsername(username);
     }
 }
