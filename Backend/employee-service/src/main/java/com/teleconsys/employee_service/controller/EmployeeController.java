@@ -50,7 +50,7 @@ public class EmployeeController {
         return employeeService.getEmployees(employeeId);
     }
 
-    @GetMapping("/by-department/{departmentId}")
+    @GetMapping("/department/{departmentId}")
     public List<Employee> getEmployeesByDepartmentId(@PathVariable Integer departmentId) {
         return employeeService.getEmployeesByDepartmentId(departmentId);
     }

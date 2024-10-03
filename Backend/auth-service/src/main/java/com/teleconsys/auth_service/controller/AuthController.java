@@ -39,7 +39,7 @@ public class AuthController {
     @GetMapping("/validate")
     public boolean validateToken(@RequestParam String token, @RequestParam String username) {
         // Ottiene i dettagli dell'utente e valida il token
-        UserDetails userDetails = jwtService.loadUserByUsername(username);
+        UserDetails userDetails = jwtService.loadUserByUsername(token, username);
         return jwtService.validateToken(token, userDetails);
     }
 }
