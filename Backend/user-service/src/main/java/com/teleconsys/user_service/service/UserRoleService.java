@@ -57,4 +57,3 @@ public class UserRoleService {
         return userRoleDao.findByUser(user).stream().map(UserRole::getRole).collect(Collectors.toList());
     }
 }
-
