@@ -10,7 +10,7 @@ import java.util.List;
 
 @FeignClient(name = "employee-service", url = "http://localhost:9085")
 public interface EmployeeClient {
-    @GetMapping("/employees/by-department/{departmentId}")
+    @GetMapping("/employees/department/{departmentId}")
     List<EmployeeDTO> getEmployeesByDepartmentId(@PathVariable("departmentId") Integer departmentId);
 }
 

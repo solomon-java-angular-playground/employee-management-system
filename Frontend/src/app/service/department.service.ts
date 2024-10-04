@@ -8,9 +8,9 @@ import { Department } from '../model/department.model';
 })
 export class DepartmentService {
   private departmentEmployeesApi =
-    'http://localhost:9090/departments/employees';
+    'http://localhost:9080/departments/employees';
 
-  private departmentsApi = 'http://localhost:9090/departments';
+  private departmentsApi = 'http://localhost:9080/departments';
 
   constructor(private http: HttpClient) {}
 

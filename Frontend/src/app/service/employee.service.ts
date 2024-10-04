@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class EmployeeService {
-  employeesApi = 'http://localhost:9090/employees';
+  employeesApi = 'http://localhost:9085/employees';
 
   constructor(private http: HttpClient) {}
 
@@ -20,7 +20,7 @@ export class EmployeeService {
     // Se c'è un nuovo nome del dipartimento, viene salvato prima quello
     if (newDepartmentName) {
       return this.http
-        .post<Department>('http://localhost:9090/departments', {
+        .post<Department>('http://localhost:9080/departments', {
           name: newDepartmentName,
         })
         .pipe(
