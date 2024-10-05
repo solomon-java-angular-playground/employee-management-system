@@ -7,6 +7,7 @@
         class="department-container"
       >
         <h3>{{ department }}</h3>
+
         <table
           mat-table
           [dataSource]="departmentEmployees[department]"
@@ -60,10 +61,12 @@
             </td>
           </ng-container>
 
-          <!-- Righe e intestazioni della tabella -->
+          <!-- Righe della tabella -->
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
+
+        <!-- Messaggio se non ci sono impiegati nel dipartimento -->
         <div
           *ngIf="
             !departmentEmployees[department] ||

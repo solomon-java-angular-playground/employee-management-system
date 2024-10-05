@@ -5,7 +5,6 @@ import { DepartmentService } from '../service/department.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
-import { DepartmentEmployees } from '../model/department-employees.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -26,7 +25,7 @@ import { MatTableModule } from '@angular/material/table';
   styleUrls: ['./department-list.component.css'],
 })
 export class DepartmentListComponent implements OnInit {
-  departmentEmployees: DepartmentEmployees = {};
+  departmentEmployees: { [key: string]: any[] } = {};
   displayedColumns: string[] = [
     'employeeName',
     'employeeEmail',
@@ -44,9 +43,20 @@ export class DepartmentListComponent implements OnInit {
 
   getDepartmentEmployees(): void {
     this.departmentService.getDepartmentEmployees().subscribe({
-      next: (res: DepartmentEmployees) => {
-        console.log('Data received from getDepartment service: ', res);
-        this.departmentEmployees = res;
+      next: (response) => {
+        // Raggruppamento dei dipendenti per dipartimento
+        response.forEach((item: any) => {
+          const departmentName = item[1]; // Nome del dipartimento
+          const employee = item[2]; // Dati dell'impiegato
+
+          // Se il dipartimento non è ancora presente nell'oggetto departmentEmployees, crearlo
+          if (!this.departmentEmployees[departmentName]) {
+            this.departmentEmployees[departmentName] = [];
+          }
+
+          // Aggiunta del dipendente al dipartimento corrispondente
+          this.departmentEmployees[departmentName].push(employee);
+        });
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error fetching department employees:', err);
