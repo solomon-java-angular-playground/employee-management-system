@@ -29,10 +29,6 @@ public class Employee {
         return employeeId;
     }
 
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
     public String getEmployeeName() {
         return employeeName;
     }
