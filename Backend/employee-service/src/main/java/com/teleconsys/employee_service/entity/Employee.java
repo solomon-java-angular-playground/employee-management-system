@@ -20,6 +20,7 @@ public class Employee {
 
     // Campo per l'ID del dipartimento
     private Integer employeeDepartmentId;
+    private String employeeDepartmentName;
 
     // Costruttore di default, getter e setter
     public Employee() { }
@@ -78,6 +79,14 @@ public class Employee {
 
     public void setEmployeeDepartmentId(Integer employeeDepartmentId) {
         this.employeeDepartmentId = employeeDepartmentId;
+    }
+
+    public String getEmployeeDepartmentName() {
+        return employeeDepartmentName;
+    }
+
+    public void setEmployeeDepartmentName(String employeeDepartmentName) {
+        this.employeeDepartmentName = employeeDepartmentName;
     }
 
     public String getEmployeeEmail() {

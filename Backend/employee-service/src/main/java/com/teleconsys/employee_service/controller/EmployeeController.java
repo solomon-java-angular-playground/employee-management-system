@@ -29,6 +29,7 @@ public class EmployeeController {
             DepartmentDTO departmentDTO = departmentClient.getDepartmentById(employee.getEmployeeDepartmentId());
             if (departmentDTO != null) {
                 employee.setEmployeeDepartmentId(departmentDTO.getDepartmentId());
+                employee.setEmployeeDepartmentName(departmentDTO.getDepartmentName());
             } else {
                 throw new RuntimeException("Department not found");
             }
@@ -73,6 +74,7 @@ public class EmployeeController {
             DepartmentDTO department = departmentClient.getDepartmentById(employee.getEmployeeDepartmentId());
             if (department != null) {
                 existingEmployee.setEmployeeDepartmentId(department.getDepartmentId());
+                existingEmployee.setEmployeeDepartmentName(department.getDepartmentName());
             } else {
                 throw new RuntimeException("Department not found");
             }
