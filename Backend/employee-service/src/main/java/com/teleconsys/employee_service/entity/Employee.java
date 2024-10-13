@@ -16,7 +16,7 @@ public class Employee {
     private String employeeAddress;
     private String employeeGender;
     private String employeeSkills;
-    private String employeeEmail; // Nuovo campo per l'email
+    private String employeeEmail;
 
     // Campo per l'ID del dipartimento
     private Integer employeeDepartmentId;

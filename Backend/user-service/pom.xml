@@ -37,18 +37,22 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
@@ -66,6 +70,7 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -99,25 +104,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!--<dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-jpa</artifactId>
-            <version>5.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-apt</artifactId>
-            <version>5.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-core</artifactId>
-            <version>5.1.0</version>
-        </dependency>-->
-
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -138,45 +124,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!--&lt;!&ndash; Plugin di QueryDSL per la generazione del codice &ndash;&gt;
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
-                <configuration>
-                    <source>22</source>
-                    <target>22</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.6.2</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.30</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>0.2.0</version>
-                        </path>
-                        <path>
-                            <groupId>com.querydsl</groupId>
-                            <artifactId>querydsl-apt</artifactId>
-                            <version>5.1.0</version>
-                            <classifier>jakarta</classifier>
-                        </path>
-                        <path>
-                            <groupId>jakarta.persistence</groupId>
-                            <artifactId>jakarta.persistence-api</artifactId>
-                            <version>3.1.0</version>
-                        </path>
-                    </annotationProcessorPaths>
-                    <generatedSourcesDirectory>${project.build.directory}/generated-sources</generatedSourcesDirectory>
-                </configuration>
-            </plugin>-->
         </plugins>
     </build>
 
