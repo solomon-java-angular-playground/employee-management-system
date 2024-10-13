@@ -1,5 +1,6 @@
 package com.teleconsys.employee_service.controller;
 
+import com.teleconsys.employee_service.dto.EmployeeDTO;
 import com.teleconsys.employee_service.feign.DepartmentClient;
 import com.teleconsys.employee_service.dto.DepartmentDTO;
 import com.teleconsys.employee_service.entity.Employee;
@@ -52,7 +53,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/department/{departmentId}")
-    public List<Employee> getEmployeesByDepartmentId(@PathVariable Integer departmentId) {
+    public List<EmployeeDTO> getEmployeesByDepartmentId(@PathVariable Integer departmentId) {
         return employeeService.getEmployeesByDepartmentId(departmentId);
     }
 
