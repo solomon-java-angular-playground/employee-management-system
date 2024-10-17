@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 // Annotazione che indica che la classe EmployeeService è un componente
@@ -53,26 +54,31 @@ public class EmployeeService {
     }
 
     // Listener per ascoltare le richieste di impiegati basate su un departmentId inviate dal department-service
-    @RabbitListener(queues = "employeeRequestQueue")  // Ascolta le richieste nella coda RabbitMQ
-    public List<EmployeeDTO> getEmployeesByDepartmentId(Integer departmentId) {
+    @RabbitListener(queues = "employeeRequestQueue")
+    public List<Map<String, Object>> getEmployeesByDepartmentId(Integer departmentId) {
+        System.out.println("Received request for departmentId: " + departmentId);
         try {
             List<Employee> employees = employeeDao.findByEmployeeDepartmentId(departmentId);
+            System.out.println("Employees fetched: " + employees);
 
-            // Converti l'elenco di Employee in EmployeeDTO
-            return employees.stream().map(this::convertToDTO).collect(Collectors.toList());
+            // Convertire Employee in Map<String, Object> per inviare una risposta generica
+            return employees.stream().map(this::convertEmployeeToMap).collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error retrieving employees by department: " + e.getMessage(), e);
         }
     }
 
-    // Metodo per convertire Employee in EmployeeDTO
-    private EmployeeDTO convertToDTO(Employee employee) {
-        return new EmployeeDTO(
-                employee.getEmployeeId(),
-                employee.getEmployeeName(),
-                employee.getEmployeeSkills(),
-                employee.getEmployeeEmail(),   // Aggiunto per trasferire l'email
-                employee.getEmployeeDepartmentId()
+    // Metodo per convertire Employee in Map<String, Object>
+    private Map<String, Object> convertEmployeeToMap(Employee employee) {
+        return Map.of(
+                "employeeId", employee.getEmployeeId(),
+                "employeeName", employee.getEmployeeName(),
+                "employeeGender", employee.getEmployeeGender(),
+                "employeeEmail", employee.getEmployeeEmail(),
+                "employeeContactNumber", employee.getEmployeeContactNumber(),
+                "employeeAddress", employee.getEmployeeAddress(),
+                "employeeSkills", employee.getEmployeeSkills(),
+                "employeeDepartmentId", employee.getEmployeeDepartmentId()
         );
     }
 

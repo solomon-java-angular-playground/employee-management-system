@@ -1,6 +1,5 @@
 package com.teleconsys.employee_service.controller;
 
-import com.teleconsys.employee_service.dto.EmployeeDTO;
 import com.teleconsys.employee_service.feign.DepartmentClient;
 import com.teleconsys.employee_service.dto.DepartmentDTO;
 import com.teleconsys.employee_service.entity.Employee;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:4200") // Per accettare richieste provenienti da una specifica origine
@@ -53,7 +53,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/department/{departmentId}")
-    public List<EmployeeDTO> getEmployeesByDepartmentId(@PathVariable Integer departmentId) {
+    public List<Map<String, Object>> getEmployeesByDepartmentId(@PathVariable Integer departmentId) {
         return employeeService.getEmployeesByDepartmentId(departmentId);
     }
 

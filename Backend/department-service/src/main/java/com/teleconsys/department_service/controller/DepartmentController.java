@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:4200") // Per accettare richieste provenienti da una specifica origine
@@ -54,8 +55,8 @@ public class DepartmentController {
 
     // GET per ottenere i dipartimenti con i rispettivi dipendenti - solo HR può farlo
     @GetMapping("/employees")
-    public ResponseEntity<List<Object[]>> getDepartmentsWithEmployees() {
-        List<Object[]> departmentsWithEmployees = departmentService.getDepartmentsWithEmployees();
+    public ResponseEntity<List<Map<String, Object>>> getDepartmentsWithEmployees() {
+        List<Map<String, Object>> departmentsWithEmployees = departmentService.getDepartmentsWithEmployees();
         return new ResponseEntity<>(departmentsWithEmployees, HttpStatus.OK);
     }
 

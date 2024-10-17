@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DepartmentService {
@@ -56,32 +58,31 @@ public class DepartmentService {
         }
     }
 
-    public List<Object[]> getDepartmentsWithEmployees() {
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> getDepartmentsWithEmployees() {
         List<Department> departments = departmentDao.findAll();
-        List<Object[]> departmentsWithEmployees = new ArrayList<>();
+        List<Map<String, Object>> departmentsWithEmployees = new ArrayList<>();
 
         for (Department department : departments) {
-            // Invia una richiesta per ottenere gli impiegati di un dipartimento
-            List<EmployeeDTO> employees = (List<EmployeeDTO>) rabbitTemplate.convertSendAndReceive(
+            List<Map<String, Object>> employees = (List<Map<String, Object>>) rabbitTemplate.convertSendAndReceive(
                     "employeeExchange",  // Nome dell'exchange su RabbitMQ
                     "employee.routingkey",  // Routing key usata per questa richiesta
                     department.getDepartmentId()  // ID del dipartimento da inviare nella richiesta
             );
 
-            // Costruisce la lista di dipartimenti con i loro dipendenti
             if (employees != null) {
-                for (EmployeeDTO employeeDTO : employees) {
-                    Object[] departmentEmployeeData = new Object[]{
-                            department.getDepartmentId(),
-                            department.getDepartmentName(),
-                            employeeDTO
-                    };
+                for (Map<String, Object> employeeData : employees) {
+                    Map<String, Object> departmentEmployeeData = new HashMap<>();
+                    departmentEmployeeData.put("departmentId", department.getDepartmentId());
+                    departmentEmployeeData.put("departmentName", department.getDepartmentName());
+                    departmentEmployeeData.put("employee", employeeData);
                     departmentsWithEmployees.add(departmentEmployeeData);
                 }
             }
         }
         return departmentsWithEmployees;
     }
+
 
     /* //Metodo per ottenere i dipartimenti con gli impiegati utilizzando EmployeeDTO
     public List<Object[]> getDepartmentsWithEmployees() {

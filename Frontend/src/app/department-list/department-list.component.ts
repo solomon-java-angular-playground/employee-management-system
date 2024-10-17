@@ -34,20 +34,23 @@ export class DepartmentListComponent implements OnInit {
     'employeeSkills',
     'employeeGender',
   ];
+  isLoading = true;  // Stato di caricamento iniziale
 
-  constructor(private departmentService: DepartmentService) {}
+  constructor(private departmentService: DepartmentService) { }
 
   ngOnInit(): void {
     this.getDepartmentEmployees();
   }
 
   getDepartmentEmployees(): void {
+    this.isLoading = true;  // Imposta lo stato di caricamento
     this.departmentService.getDepartmentEmployees().subscribe({
       next: (response) => {
         // Raggruppamento dei dipendenti per dipartimento
         response.forEach((item: any) => {
-          const departmentName = item[1]; // Nome del dipartimento
-          const employee = item[2]; // Dati dell'impiegato
+          const departmentName = item.departmentName // Nome del dipartimento
+          const employee = item.employee; // Dati dell'impiegato
+          console.log(employee)
 
           // Se il dipartimento non è ancora presente nell'oggetto departmentEmployees, crearlo
           if (!this.departmentEmployees[departmentName]) {
@@ -57,6 +60,7 @@ export class DepartmentListComponent implements OnInit {
           // Aggiunta del dipendente al dipartimento corrispondente
           this.departmentEmployees[departmentName].push(employee);
         });
+        this.isLoading = false;  // Dati caricati, nascondo l'indicatore di caricamento
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error fetching department employees:', err);

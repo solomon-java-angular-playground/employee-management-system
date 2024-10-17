@@ -1,6 +1,10 @@
 package com.teleconsys.department_service.dto;
 
-public class EmployeeDTO {
+import java.io.Serializable;
+
+public class EmployeeDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Integer employeeId;
     private String employeeName;
     private String employeeContactNumber;
@@ -10,10 +14,10 @@ public class EmployeeDTO {
     private String employeeEmail;
     private Integer employeeDepartmentId;
 
- /*   public EmployeeDTO() {
-    }*/
+    public EmployeeDTO() {
+    }
 
-/*    public EmployeeDTO(Integer employeeId, String employeeName, String employeeContactNumber,
+    public EmployeeDTO(Integer employeeId, String employeeName, String employeeContactNumber,
                        String employeeAddress, String employeeGender, String employeeSkills,
                        String employeeEmail, Integer employeeDepartmentId) {
         this.employeeId = employeeId;
@@ -24,7 +28,7 @@ public class EmployeeDTO {
         this.employeeSkills = employeeSkills;
         this.employeeEmail = employeeEmail;
         this.employeeDepartmentId = employeeDepartmentId;
-    }*/
+    }
 
     // Getters e Setters
     public Integer getEmployeeId() {
