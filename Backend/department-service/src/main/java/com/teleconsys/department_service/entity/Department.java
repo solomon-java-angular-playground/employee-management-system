@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "department")
+@Table(name = "department", uniqueConstraints = {@UniqueConstraint(columnNames = "department_name")})
 @JsonIgnoreProperties({"employees"})
 public class Department {
 

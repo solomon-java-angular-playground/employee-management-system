@@ -53,6 +53,25 @@ public class RabbitMQConfig {
         return factory;
     }
 
+    // Definizione della coda per il department-service
+    @Bean
+    public Queue departmentQueue() {
+        return new Queue("departmentQueue");
+    }
+
+    // Definizione dell'exchange per il department-service
+    @Bean
+    public DirectExchange departmentExchange() {
+        return new DirectExchange("departmentExchange");
+    }
+
+    // Binding tra l'exchange "departmentExchange" e la coda "departmentQueue"
+    @Bean
+    public Binding departmentBinding(Queue departmentQueue, DirectExchange departmentExchange) {
+        return BindingBuilder.bind(departmentQueue).to(departmentExchange).with("department.routingkey");
+    }
+
+    // Definizione della coda e dell'exchange per il employee-service
     @Bean
     public Queue employeeRequestQueue() {
         return new Queue("employeeRequestQueue");

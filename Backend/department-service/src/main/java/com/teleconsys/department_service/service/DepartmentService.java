@@ -4,6 +4,7 @@ import com.teleconsys.department_service.dao.DepartmentDao;
 import com.teleconsys.department_service.entity.Department;
 import com.teleconsys.department_service.dto.EmployeeDTO;
 import com.teleconsys.department_service.feign.EmployeeClient;
+import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,16 @@ public class DepartmentService {
     @Autowired
     private RabbitTemplate rabbitTemplate;  // RabbitTemplate per inviare messaggi
 
-    /* Feign non più necessario perchè usiamo
-    @Autowired
-    private EmployeeClient employeeClient; // Inject Feign client
-     */
-
+    @Transactional  // Assicura che il salvataggio e l'invio del messaggio siano atomici
     public Department saveDepartment(Department department) {
         try {
+            // Controlla se esiste un dipartimento con lo stesso nome
+            Department existingDepartment = departmentDao.findByDepartmentName(department.getDepartmentName());
+            if (existingDepartment != null) {
+                return existingDepartment;  // Se esiste, ritorna il dipartimento esistente
+            }
+
+            // Se non esiste, crea un nuovo dipartimento
             Department savedDepartment = departmentDao.save(department);
 
             // Pubblica un messaggio su RabbitMQ

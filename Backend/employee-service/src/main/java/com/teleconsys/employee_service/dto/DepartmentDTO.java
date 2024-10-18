@@ -4,6 +4,10 @@ public class DepartmentDTO {
     private Integer departmentId;
     private String departmentName;
 
+    // Costruttore predefinito (senza argomenti)
+    public DepartmentDTO() {
+    }
+
     public DepartmentDTO(String departmentName) {
         this.departmentName = departmentName;
     }
