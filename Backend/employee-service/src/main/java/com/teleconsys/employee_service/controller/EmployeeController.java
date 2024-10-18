@@ -37,7 +37,7 @@ public class EmployeeController {
         } else {
             throw new RuntimeException("Department information is missing");
         }
-        return employeeService.saveEmployee(employee);
+        return employeeService.saveEmployee(employee, employee.getEmployeeDepartmentName());
     }
 
     @GetMapping

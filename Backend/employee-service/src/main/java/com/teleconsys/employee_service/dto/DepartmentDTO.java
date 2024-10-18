@@ -4,6 +4,10 @@ public class DepartmentDTO {
     private Integer departmentId;
     private String departmentName;
 
+    public DepartmentDTO(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
     // Getter e Setter
     public Integer getDepartmentId() {
         return departmentId;

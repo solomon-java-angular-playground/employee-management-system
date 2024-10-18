@@ -1,9 +1,13 @@
 package com.teleconsys.employee_service.service;
 
 import com.teleconsys.employee_service.dao.EmployeeDao;
+import com.teleconsys.employee_service.dto.DepartmentDTO;
 import com.teleconsys.employee_service.dto.EmployeeDTO;
 import com.teleconsys.employee_service.entity.Employee;
+import com.teleconsys.employee_service.feign.DepartmentClient;
+import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +26,36 @@ public class EmployeeService {
     @Autowired
     private EmployeeDao employeeDao;
 
+    @Autowired
+    private DepartmentClient departmentClient; // Feign client
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     public EmployeeService(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
     }
 
-    public Employee saveEmployee(Employee employee) {
-        try {
-            return employeeDao.save(employee);
+    @Transactional
+    public Employee saveEmployee(Employee employee, String departmentName) {
+        // Primo passo: Salva o verifica il dipartimento
+        DepartmentDTO department;
+        if (departmentName != null) {
+            // Prova a salvare il nuovo dipartimento tramite department-service
+            department = departmentClient.saveDepartment(new DepartmentDTO(departmentName));
+        } else {
+            department = departmentClient.getDepartmentById(employee.getEmployeeDepartmentId());
+        }
 
-        } catch (Exception e) {
-            throw new RuntimeException("Error saving employee: " + e.getMessage(), e);
+        if (department != null) {
+            // Associa il dipartimento salvato all'impiegato
+            employee.setEmployeeDepartmentId(department.getDepartmentId());
+            employee.setEmployeeDepartmentName(department.getDepartmentName());
+
+            // Secondo passo: Salva l'impiegato
+            return employeeDao.save(employee);
+        } else {
+            throw new RuntimeException("Department creation failed");
         }
     }
 
@@ -61,7 +85,7 @@ public class EmployeeService {
             List<Employee> employees = employeeDao.findByEmployeeDepartmentId(departmentId);
             System.out.println("Employees fetched: " + employees);
 
-            // Convertire Employee in Map<String, Object> per inviare una risposta generica
+            // Conversione di Employee in Map<String, Object>
             return employees.stream().map(this::convertEmployeeToMap).collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error retrieving employees by department: " + e.getMessage(), e);
@@ -81,16 +105,6 @@ public class EmployeeService {
                 "employeeDepartmentId", employee.getEmployeeDepartmentId()
         );
     }
-
-    /*
-    public List<Employee> getEmployeesByDepartmentId(Integer departmentId) {
-        try {
-            return employeeDao.findByEmployeeDepartmentId(departmentId);
-        } catch (Exception e) {
-            throw new RuntimeException("Error retrieving employees by department: " + e.getMessage(), e);
-        }
-    }
-    */
 
     public void deleteEmployee(Integer employeeId) {
         try {

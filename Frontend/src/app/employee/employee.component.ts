@@ -116,18 +116,19 @@ export class EmployeeComponent implements OnInit {
 
   saveEmployee(employeeForm: NgForm): void {
     if (this.createNewDepartment === 'yes' && this.newDepartmentName) {
-      this.createDepartment(this.newDepartmentName).subscribe({
-        next: (newDepartment: Department) => {
-          this.employee.employeeDepartmentId =
-            newDepartment.departmentId as number;
-          this.saveOrUpdateEmployee(employeeForm);
-        },
-        error: (err: HttpErrorResponse) => {
-          console.log('Error creating department:', err);
-        },
-      });
+        this.createDepartment(this.newDepartmentName).subscribe({
+            next: (newDepartment: Department) => {
+                this.employee.employeeDepartmentId = newDepartment.departmentId as number;
+                this.saveOrUpdateEmployee(employeeForm);
+            },
+            error: (err: HttpErrorResponse) => {
+                console.log('Error creating department:', err);
+                alert('Errore durante il salvataggio del dipartimento. Riprova.');
+                this.router.navigate(['/employee']); // Ritorna alla pagina di creazione dell'impiegato
+            },
+        });
     } else {
-      this.saveOrUpdateEmployee(employeeForm);
+        this.saveOrUpdateEmployee(employeeForm);
     }
   }
 
