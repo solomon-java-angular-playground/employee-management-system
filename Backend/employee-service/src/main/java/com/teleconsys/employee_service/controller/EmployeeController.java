@@ -1,13 +1,17 @@
 package com.teleconsys.employee_service.controller;
 
+import com.teleconsys.employee_service.dto.UserActivityDTO;
 import com.teleconsys.employee_service.feign.DepartmentClient;
 import com.teleconsys.employee_service.dto.DepartmentDTO;
 import com.teleconsys.employee_service.entity.Employee;
 import com.teleconsys.employee_service.service.EmployeeService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.teleconsys.employee_service.feign.UserActivityClient;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +26,12 @@ public class EmployeeController {
     @Autowired
     private DepartmentClient departmentClient;
 
+    @Autowired
+    private UserActivityClient userActivityClient;
+
     @PostMapping
     //@PreAuthorize("hasRole('HR')")
-    public Employee saveEmployee(@RequestBody Employee employee) {
+    public Employee saveEmployee(@RequestBody Employee employee, HttpServletRequest request) {
         if (employee.getEmployeeDepartmentId() != null) {
             // Uso del Feign Client per ottenere il dipartimento
             DepartmentDTO departmentDTO = departmentClient.getDepartmentById(employee.getEmployeeDepartmentId());
@@ -37,7 +44,19 @@ public class EmployeeController {
         } else {
             throw new RuntimeException("Department information is missing");
         }
-        return employeeService.saveEmployee(employee, employee.getEmployeeDepartmentName());
+
+        Employee savedEmployee = employeeService.saveEmployee(employee, employee.getEmployeeDepartmentName());
+
+        // Traccia l'attività dell'utente e crea l'oggetto UserActivityDTO
+        UserActivityDTO userActivity = new UserActivityDTO();
+        userActivity.setUserId(request.getUserPrincipal().getName());
+        userActivity.setAction("add_employee");
+        userActivity.setIpAddress(request.getRemoteAddr());
+        userActivity.setDescription("Employee ID: " + savedEmployee.getEmployeeId());
+        userActivity.setTimestamp(LocalDateTime.now());
+
+        userActivityClient.trackActivity(userActivity);
+        return savedEmployee;
     }
 
     @GetMapping

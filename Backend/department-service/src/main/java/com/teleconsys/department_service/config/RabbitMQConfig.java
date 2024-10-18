@@ -39,6 +39,24 @@ public class RabbitMQConfig {
         return factory;
     }
 
+    // Exchange per le richieste di creazione del dipartimento
+    @Bean
+    public DirectExchange departmentExchange() {
+        return new DirectExchange("departmentExchange");
+    }
+
+    // Coda per le richieste di creazione del dipartimento
+    @Bean
+    public Queue departmentRequestQueue() {
+        return new Queue("departmentRequestQueue");
+    }
+
+    // Binding tra exchange e coda per le richieste di creazione del dipartimento
+    @Bean
+    public Binding departmentBinding(Queue departmentRequestQueue, DirectExchange departmentExchange) {
+        return BindingBuilder.bind(departmentRequestQueue).to(departmentExchange).with("department.create");
+    }
+
     @Bean
     public DirectExchange employeeExchange() {
         return new DirectExchange("employeeExchange");

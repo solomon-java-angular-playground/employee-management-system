@@ -8,7 +8,8 @@ public class DepartmentDTO {
     public DepartmentDTO() {
     }
 
-    public DepartmentDTO(String departmentName) {
+    public DepartmentDTO(Integer departmentId, String departmentName) {
+        this.departmentId = departmentId;
         this.departmentName = departmentName;
     }
 
@@ -29,4 +30,3 @@ public class DepartmentDTO {
         this.departmentName = departmentName;
     }
 }
-

@@ -1,6 +1,6 @@
 package com.teleconsys.department_service.controller;
 
-import com.teleconsys.department_service.entity.Department;
+import com.teleconsys.department_service.dto.DepartmentDTO;
 import com.teleconsys.department_service.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,37 +20,44 @@ public class DepartmentController {
 
     // POST per creare un nuovo dipartimento
     @PostMapping
-    public Department saveDepartment(@RequestBody Department department) {
+    public ResponseEntity<DepartmentDTO> saveDepartment(@RequestBody DepartmentDTO departmentDto) {
         // Capitalizza la prima lettera del nome del dipartimento
-        String departmentName = department.getDepartmentName();
+        String departmentName = departmentDto.getDepartmentName();
         if (departmentName != null && !departmentName.isEmpty()) {
-            department.setDepartmentName(capitalizeFirstLetter(departmentName));
+            departmentDto.setDepartmentName(capitalizeFirstLetter(departmentName));
         }
-        return departmentService.saveDepartment(department);
+
+        // Salva il dipartimento e restituisci il DTO del dipartimento salvato
+        DepartmentDTO savedDepartment = departmentService.saveDepartment(departmentDto);
+        return new ResponseEntity<>(savedDepartment, HttpStatus.CREATED);
     }
 
     // GET per ottenere tutti i dipartimenti - accesso consentito a tutti
     @GetMapping
-    public List<Department> getDepartments() {
-        return departmentService.getDepartments();
+    public ResponseEntity<List<DepartmentDTO>> getDepartments() {
+        List<DepartmentDTO> departments = departmentService.getDepartments();
+        return new ResponseEntity<>(departments, HttpStatus.OK);
     }
 
     // GET per ottenere un singolo dipartimento tramite ID - accesso consentito a tutti
     @GetMapping("/{departmentId}")
-    public Department getDepartment(@PathVariable Integer departmentId) {
-        return departmentService.getDepartment(departmentId);
+    public ResponseEntity<DepartmentDTO> getDepartment(@PathVariable Integer departmentId) {
+        DepartmentDTO department = departmentService.getDepartment(departmentId);
+        return new ResponseEntity<>(department, HttpStatus.OK);
     }
 
     // PUT per aggiornare un dipartimento esistente - solo HR può farlo
     @PutMapping
-    public Department updateDepartment(@RequestBody Department department) {
-        return departmentService.updateDepartment(department);
+    public ResponseEntity<DepartmentDTO> updateDepartment(@RequestBody DepartmentDTO departmentDto) {
+        DepartmentDTO updatedDepartment = departmentService.updateDepartment(departmentDto);
+        return new ResponseEntity<>(updatedDepartment, HttpStatus.OK);
     }
 
     // DELETE per eliminare un dipartimento tramite ID - solo HR può farlo
     @DeleteMapping("/{departmentId}")
-    public void deleteDepartment(@PathVariable Integer departmentId) {
+    public ResponseEntity<Void> deleteDepartment(@PathVariable Integer departmentId) {
         departmentService.deleteDepartment(departmentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // GET per ottenere i dipartimenti con i rispettivi dipendenti - solo HR può farlo

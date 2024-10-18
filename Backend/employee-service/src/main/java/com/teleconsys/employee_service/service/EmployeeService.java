@@ -2,9 +2,7 @@ package com.teleconsys.employee_service.service;
 
 import com.teleconsys.employee_service.dao.EmployeeDao;
 import com.teleconsys.employee_service.dto.DepartmentDTO;
-import com.teleconsys.employee_service.dto.EmployeeDTO;
 import com.teleconsys.employee_service.entity.Employee;
-import com.teleconsys.employee_service.feign.DepartmentClient;
 import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -27,32 +25,34 @@ public class EmployeeService {
     private EmployeeDao employeeDao;
 
     @Autowired
-    private DepartmentClient departmentClient; // Feign client
-
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private RabbitTemplate rabbitTemplate;  // RabbitTemplate per inviare messaggi
 
     public EmployeeService(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
     }
 
     @Transactional
+    @SuppressWarnings("unchecked")
     public Employee saveEmployee(Employee employee, String departmentName) {
-        // Primo passo: Salva o verifica il dipartimento
-        DepartmentDTO department;
-        if (departmentName != null) {
-            // Prova a salvare il nuovo dipartimento tramite department-service
-            department = departmentClient.saveDepartment(new DepartmentDTO(departmentName));
-        } else {
-            department = departmentClient.getDepartmentById(employee.getEmployeeDepartmentId());
-        }
+        // Crea la richiesta come una semplice mappa
+        Map<String, Object> departmentRequest = Map.of("departmentName", departmentName);
 
-        if (department != null) {
-            // Associa il dipartimento salvato all'impiegato
-            employee.setEmployeeDepartmentId(department.getDepartmentId());
-            employee.setEmployeeDepartmentName(department.getDepartmentName());
+        // Invia il messaggio e ricevi la risposta come mappa
+        Map<String, Object> departmentMap = (Map<String, Object>) rabbitTemplate.convertSendAndReceive(
+                "departmentExchange",
+                "department.create",
+                departmentRequest
+        );
 
-            // Secondo passo: Salva l'impiegato
+        if (departmentMap != null) {
+            // Estrai i dati dalla mappa e associarli al dipendente
+            Integer departmentId = (Integer) departmentMap.get("departmentId");
+            String departmentNameResponse = (String) departmentMap.get("departmentName");
+
+            // Associa il dipartimento all'impiegato
+            employee.setEmployeeDepartmentId(departmentId);
+            employee.setEmployeeDepartmentName(departmentNameResponse);
+
             return employeeDao.save(employee);
         } else {
             throw new RuntimeException("Department creation failed");
@@ -121,5 +121,12 @@ public class EmployeeService {
         } catch (Exception e) {
             throw new RuntimeException("Error updating employee: " + e.getMessage(), e);
         }
+    }
+
+    // Metodo per convertire una Map in DepartmentDTO
+    private DepartmentDTO convertMapToDepartmentDTO(Map<String, Object> departmentMap) {
+        Integer id = (Integer) departmentMap.get("departmentId");
+        String name = (String) departmentMap.get("departmentName");
+        return new DepartmentDTO(id, name);
     }
 }

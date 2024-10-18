@@ -1,6 +1,7 @@
 package com.teleconsys.department_service.service;
 
 import com.teleconsys.department_service.dao.DepartmentDao;
+import com.teleconsys.department_service.dto.DepartmentDTO;
 import com.teleconsys.department_service.entity.Department;
 import com.teleconsys.department_service.dto.EmployeeDTO;
 import com.teleconsys.department_service.feign.EmployeeClient;
@@ -8,11 +9,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class DepartmentService {
@@ -24,42 +27,76 @@ public class DepartmentService {
     private RabbitTemplate rabbitTemplate;  // RabbitTemplate per inviare messaggi
 
     @Transactional  // Assicura che il salvataggio e l'invio del messaggio siano atomici
-    public Department saveDepartment(Department department) {
+    @RabbitListener(queues = "departmentRequestQueue")
+    public Map<String, Object> saveDepartment(Map<String, Object> departmentRequest) {
+        // Log per vedere cosa arriva
+        System.out.println("Received department request: " + departmentRequest);
         try {
+            // Estrai il nome del dipartimento dalla richiesta
+            String departmentName = (String) departmentRequest.get("departmentName");
+
             // Controlla se esiste un dipartimento con lo stesso nome
-            Department existingDepartment = departmentDao.findByDepartmentName(department.getDepartmentName());
+            Department existingDepartment = departmentDao.findByDepartmentName(departmentName);
             if (existingDepartment != null) {
-                return existingDepartment;  // Se esiste, ritorna il dipartimento esistente
+                // Restituisci una mappa con i dettagli del dipartimento esistente
+                return convertDepartmentToMap(existingDepartment);
             }
 
             // Se non esiste, crea un nuovo dipartimento
-            Department savedDepartment = departmentDao.save(department);
+            Department newDepartment = new Department();
+            newDepartment.setDepartmentName(departmentName);
+            Department savedDepartment = departmentDao.save(newDepartment);
 
-            // Pubblica un messaggio su RabbitMQ
-            rabbitTemplate.convertAndSend("departmentExchange", "department.routingkey", savedDepartment);
-
-            return savedDepartment;
+            // Restituisci una mappa con i dettagli del dipartimento appena creato
+            return convertDepartmentToMap(savedDepartment);
         } catch (Exception e) {
             throw new RuntimeException("Unable to save department: " + e.getMessage());
         }
     }
 
-    public List<Department> getDepartments() {
+    public DepartmentDTO saveDepartment(DepartmentDTO departmentDto) {
+        // Controlla se il dipartimento esiste
+        Department existingDepartment = departmentDao.findByDepartmentName(departmentDto.getDepartmentName());
+        if (existingDepartment != null) {
+            return convertToDTO(existingDepartment);  // Restituisci il dipartimento esistente
+        }
+
+        // Se non esiste, crea un nuovo dipartimento
+        Department newDepartment = new Department();
+        newDepartment.setDepartmentName(departmentDto.getDepartmentName());
+        Department savedDepartment = departmentDao.save(newDepartment);
+
+        return convertToDTO(savedDepartment);
+    }
+
+    // Metodo di utilità per convertire un Department in una mappa
+    private Map<String, Object> convertDepartmentToMap(Department department) {
+        return Map.of(
+                "departmentId", department.getDepartmentId(),
+                "departmentName", department.getDepartmentName()
+        );
+    }
+
+    // Metodo di utilità per convertire un Department in DepartmentDTO
+    private DepartmentDTO convertToDTO(Department department) {
+        return new DepartmentDTO(department.getDepartmentId(), department.getDepartmentName());
+    }
+
+
+    public List<DepartmentDTO> getDepartments() {
         try {
             List<Department> departments = new ArrayList<>();
             departmentDao.findAll().forEach(departments::add);
-            return departments;
+            return departments.stream().map(this::convertToDTO).collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Unable to get departments: " + e.getMessage());
         }
     }
 
-    public Department getDepartment(Integer departmentId) {
-        try {
-            return departmentDao.findById(departmentId).orElseThrow();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to get department: " + e.getMessage());
-        }
+    public DepartmentDTO getDepartment(Integer departmentId) {
+        Department department = departmentDao.findById(departmentId).orElseThrow(() ->
+                new RuntimeException("Department not found"));
+        return convertToDTO(department);
     }
 
     @SuppressWarnings("unchecked")
@@ -87,40 +124,14 @@ public class DepartmentService {
         return departmentsWithEmployees;
     }
 
+    public DepartmentDTO updateDepartment(DepartmentDTO departmentDto) {
+        Department department = departmentDao.findById(departmentDto.getDepartmentId()).orElseThrow(() ->
+                new RuntimeException("Department not found"));
 
-    /* //Metodo per ottenere i dipartimenti con gli impiegati utilizzando EmployeeDTO
-    public List<Object[]> getDepartmentsWithEmployees() {
-        List<Department> departments = departmentDao.findAll();
+        department.setDepartmentName(departmentDto.getDepartmentName());
+        Department updatedDepartment = departmentDao.save(department);
 
-        List<Object[]> departmentsWithEmployees = new ArrayList<>();
-        for (Department department : departments) {
-            List<EmployeeDTO> employees = employeeClient.getEmployeesByDepartmentId(department.getDepartmentId());
-
-            for (EmployeeDTO employeeDTO : employees) {
-                Object[] departmentEmployeeData = new Object[]{
-                        department.getDepartmentId(),
-                        department.getDepartmentName(),
-                        employeeDTO
-                };
-                departmentsWithEmployees.add(departmentEmployeeData);
-            }
-        }
-
-        return departmentsWithEmployees;
-    }
-    */
-
-    public Department updateDepartment(Department department) {
-        try {
-            Department updatedDepartment = departmentDao.save(department);
-
-            // Pubblica un messaggio su RabbitMQ per notificare l'aggiornamento del dipartimento
-            rabbitTemplate.convertAndSend("departmentExchange", "department.routingkey", updatedDepartment);
-
-            return updatedDepartment;
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to update department: " + e.getMessage());
-        }
+        return convertToDTO(updatedDepartment);
     }
 
     public void deleteDepartment(Integer departmentId) {
