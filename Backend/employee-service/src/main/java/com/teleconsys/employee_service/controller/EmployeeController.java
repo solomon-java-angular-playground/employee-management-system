@@ -62,6 +62,9 @@ public class EmployeeController {
     @GetMapping("/{employeeId}")
     //@PreAuthorize("hasRole('HR')")
     public Employee getEmployee(@PathVariable Integer employeeId) {
+        // Log dell'azione
+        employeeLogService.logAction(employeeId, "GET", "Retrieved employee data of employeeId " + employeeId);
+
         return employeeService.getEmployees(employeeId);
     }
 

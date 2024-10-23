@@ -14,6 +14,7 @@ public class EmployeeLogService {
     public void logAction(Integer employeeId, String action, String details) {
         EmployeeLog log = new EmployeeLog(employeeId, action, details);
         employeeLogDao.save(log);
+        System.out.println("Saving log: " + log);
     }
 }
 
