@@ -36,6 +36,10 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getUsername() {
         return username;
     }

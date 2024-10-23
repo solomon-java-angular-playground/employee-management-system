@@ -1,6 +1,7 @@
 package com.teleconsys.user_service.service;
 
 import com.teleconsys.user_service.dao.UserDao;
+import com.teleconsys.user_service.dto.UserDTO;
 import com.teleconsys.user_service.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -67,5 +68,17 @@ public class UserService {
             // Gestione dell'eccezione
             throw new RuntimeException("Verification failed: " + e.getMessage(), e);
         }
+    }
+
+    public UserDTO getUserById(int userId) {
+        User user = userDao.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return convertToDTO(user);
+    }
+
+    private UserDTO convertToDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        return userDTO;
     }
 }

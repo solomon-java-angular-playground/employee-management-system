@@ -1,22 +1,16 @@
 package com.teleconsys.employee_service.dto;
 
-import java.time.LocalDateTime;
-
 public class UserActivityDTO {
-    private String userId;
+    Integer userId;
     private String action;
     private String ipAddress;
-    private String description;
-    private LocalDateTime timestamp;
 
-    public String getUserId() {
-        return userId;
+    public UserActivityDTO(Integer userId, String action, String ipAddress) {
+        this.action = action;
+        this.ipAddress = ipAddress;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
+    // Costruttori, getter e setter
     public String getAction() {
         return action;
     }
@@ -31,21 +25,5 @@ public class UserActivityDTO {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 }
