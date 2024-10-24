@@ -31,6 +31,7 @@ public class EmployeeService {
         this.employeeDao = employeeDao;
     }
 
+    // Annotazione per rendere la transazione transazionale/atomica, quindi reversibile in caso di errore
     @Transactional
     @SuppressWarnings("unchecked")
     public Employee saveEmployee(Employee employee, String departmentName) {
@@ -45,7 +46,7 @@ public class EmployeeService {
         );
 
         if (departmentMap != null) {
-            // Estrai i dati dalla mappa e associarli al dipendente
+            // Estrazione dei dati dalla mappa
             Integer departmentId = (Integer) departmentMap.get("departmentId");
             String departmentNameResponse = (String) departmentMap.get("departmentName");
 
@@ -106,6 +107,7 @@ public class EmployeeService {
         );
     }
 
+    @Transactional
     public void deleteEmployee(Integer employeeId) {
         try {
             employeeDao.deleteById(employeeId);
@@ -114,6 +116,7 @@ public class EmployeeService {
         }
     }
 
+    @Transactional
     public Employee updateEmployee(Employee employee) {
         try {
             employeeDao.findById(employee.getEmployeeId());

@@ -1,8 +1,8 @@
 package com.teleconsys.user_service.service;
 
 import com.teleconsys.user_service.dao.UserDao;
-import com.teleconsys.user_service.dto.UserDTO;
 import com.teleconsys.user_service.entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +25,7 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
+    @Transactional
     public String register(User user) {
         try {
             // Memorizza la password in chiaro
@@ -68,17 +69,5 @@ public class UserService {
             // Gestione dell'eccezione
             throw new RuntimeException("Verification failed: " + e.getMessage(), e);
         }
-    }
-
-    public UserDTO getUserById(int userId) {
-        User user = userDao.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        return convertToDTO(user);
-    }
-
-    private UserDTO convertToDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUsername(user.getUsername());
-        return userDTO;
     }
 }

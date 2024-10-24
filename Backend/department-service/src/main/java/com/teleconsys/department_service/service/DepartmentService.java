@@ -54,6 +54,7 @@ public class DepartmentService {
         }
     }
 
+    @Transactional
     public DepartmentDTO saveDepartment(DepartmentDTO departmentDto) {
         // Controlla se il dipartimento esiste
         Department existingDepartment = departmentDao.findByDepartmentName(departmentDto.getDepartmentName());
@@ -124,6 +125,7 @@ public class DepartmentService {
         return departmentsWithEmployees;
     }
 
+    @Transactional
     public DepartmentDTO updateDepartment(DepartmentDTO departmentDto) {
         Department department = departmentDao.findById(departmentDto.getDepartmentId()).orElseThrow(() ->
                 new RuntimeException("Department not found"));
@@ -134,6 +136,7 @@ public class DepartmentService {
         return convertToDTO(updatedDepartment);
     }
 
+    @Transactional
     public void deleteDepartment(Integer departmentId) {
         try {
             departmentDao.deleteById(departmentId);
