@@ -15,13 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.logging.Logger;
 
 @Service
 public class JwtService {
-
-    private static final Logger logger = Logger.getLogger(JwtService.class.getName());
-
     // Chiave segreta generata su https://tools.keycdn.com/sha256-online-generatorper firmare e verificare i token JWT
     private static final String secretkey = "b133a0c0e9bee3be20163d2ad31d6248db292aa6dcb1ee087a2aa50e0fc75ae2";
 
