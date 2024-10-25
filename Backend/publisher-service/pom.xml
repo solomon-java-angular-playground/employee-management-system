@@ -11,7 +11,7 @@
 	<groupId>com.teleconsys</groupId>
 	<artifactId>publisher-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>PublisherService</name>
+	<name>Publisher Service</name>
 	<description>Servizio per la pubblicazione dei dati degli impiegati su RabbitMQ</description>
 	<url/>
 	<licenses>

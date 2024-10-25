@@ -11,8 +11,8 @@
 	<groupId>com.teleconsys</groupId>
 	<artifactId>consumer-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ConsumerService</name>
-	<description>Servizio per l&apos;utilizzo (il consume) dei dati degli impiegati da RabbitMQ e il salvataggio su MongoDB</description>
+	<name>Consumer Service</name>
+	<description>Servizio per l'utilizzo (il 'consumo') dei dati degli impiegati da RabbitMQ e il salvataggio su MongoDB</description>
 	<url/>
 	<licenses>
 		<license/>
