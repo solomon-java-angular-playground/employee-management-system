@@ -3,8 +3,6 @@ package com.teleconsys.department_service.service;
 import com.teleconsys.department_service.dao.DepartmentDao;
 import com.teleconsys.department_service.dto.DepartmentDTO;
 import com.teleconsys.department_service.entity.Department;
-import com.teleconsys.department_service.dto.EmployeeDTO;
-import com.teleconsys.department_service.feign.EmployeeClient;
 import jakarta.transaction.Transactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

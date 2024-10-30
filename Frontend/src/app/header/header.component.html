@@ -12,12 +12,13 @@
       <mat-menu #hrTools="matMenu">
         <button mat-menu-item routerLink="/employee">Add employee</button>
         <button mat-menu-item routerLink="/employee-list">Employee list</button>
+        <button mat-menu-item (click)="downloadEmployeeReport()">
+          Download Employee Report
+        </button>
       </mat-menu>
     </ng-container>
     <!-- Mostra il link per il Department List a tutti gli utenti loggati -->
-    <a mat-button routerLink="/department-list" class="header-link"
-      >Department list</a
-    >
+    <a mat-button routerLink="/department-list" class="header-link">Department list</a>
   </ng-container>
 
   <!-- Link di login e logout -->
